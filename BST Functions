@@ -1,0 +1,107 @@
+//Creating a Binary Search Tree
+//first construct a struct for the node
+#include <iostream>
+#include <queue>
+using namespace std;
+struct BSTnode
+{
+	int data;
+	BSTnode * left;
+	BSTnode *right;
+};
+BSTnode * root;
+//Function to create new node for the tree
+BSTnode* GetNode(int value)
+{
+	BSTnode* newnode = new BSTnode;
+	newnode->data = value;
+	newnode->left = newnode->right = NULL;
+	return newnode;
+}
+//now create the function we will use to insert data into the tree
+BSTnode* Insert(BSTnode * root, int value)
+{
+	//before I insert the value, I need to check if the tree is empty 
+	if( root == NULL) //means empty
+{
+	root = GetNode(value); //create a root node for our tree
+}
+	//otherwise the tree isn’t empty 
+	else if (value <= root->data)
+	{
+		//insert the value in the left subtree
+		 root->left=Insert(root->left, value);
+
+	}
+	else
+	{
+		//insert the value in the right subtree
+	 root->right=Insert(root->right, value);
+	}
+	return root;
+}
+
+//Search for a value in the Binary Search Tree
+bool Search(BSTnode*root, int value)
+{
+	if(root == NULL) return false;
+	else if (root->data == value) return true;
+	else if (value < root->data) return Search(root->left, value);
+	else return Search(root->right, value);
+}
+//Traverse the Tree and process data
+//Traverse using Breadth first (level order)
+void LevelOrder(BSTnode* root)
+{
+	//check if the list is empty 
+	if (root == NULL) return; 
+	else
+	{
+		//the root isn't empty so create a queue to store in the data while traversing 
+		queue <BSTnode*> Q;
+		Q.push(root);
+		while (!Q.empty())
+		{
+			//add a pointer to point to the front of the queue FIFO
+			BSTnode * current = Q.front();
+			//put in children left to right of the node into queue soo it can be used to store then visit, process, remove
+			if (current->left != NULL) { Q.push(current->left); }
+			if (current->right != NULL) { Q.push(current->right); }
+			Q.pop();
+		}
+	}
+}
+void DepthFirstInOrder(BSTnode *root)
+{
+	//Using the Inorder technique, so visit the left subtree then then root then the right subtree
+	if (root == NULL) { return; }
+	else
+	{
+		//the tree isn't empty so can traverse
+		DepthFirstInOrder(root->left);
+		cout << root->data << endl;
+		DepthFirstInOrder(root->right);
+	}
+}
+int main()
+{
+	BSTnode *root = NULL;
+	root = Insert(root, 10);
+	root = Insert(root, 20);
+	 cout << "What value do you want to search for?" <<endl;
+	 int val;
+	 cin >> val;
+	 if (Search(root, val) == true)
+	 {
+		 cout << "Found" << endl;
+	 }
+	 else
+	 {
+		 cout << "not found" << endl;
+	 }
+	 LevelOrder(root); //The Breadth First Algorithm will take O(n) time and space complexity. Best case space complexity is O(1)
+	//level order goes from left to right 
+	 DepthFirstInOrder(root);
+
+	 system("pause");
+}
